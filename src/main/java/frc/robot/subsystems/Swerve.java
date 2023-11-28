@@ -23,6 +23,8 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
 
+    public boolean fieldCentricBoolean = true;
+
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.configFactoryDefault();
@@ -44,10 +46,10 @@ public class Swerve extends SubsystemBase {
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
     }
 
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    public void drive(Translation2d translation, double rotation, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                fieldCentricBoolean ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 
                                     rotation, 
@@ -100,6 +102,11 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro(){
         gyro.setYaw(0);
+    }
+
+    public void toggleFieldCentric (){
+
+        fieldCentricBoolean = ! fieldCentricBoolean;
     }
 
     public Rotation2d getYaw() {

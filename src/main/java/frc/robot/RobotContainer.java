@@ -36,13 +36,26 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
+        // Raw Controller Inputs
+        double driverTranslate = -driver.getRawAxis(translationAxis);
+        double driverStrafe = -driver.getRawAxis(strafeAxis);
+        double driverRotation = -driver.getRawAxis(rotationAxis);
+        boolean fieldCentricButton = robotCentric.getAsBoolean();
+
+        // Controller Filtering and Modification
+        robotCentric.debounce(0.04).onTrue(new toggleFieldCentric(s_Swerve));
+        driverTranslate = Math.pow(driverTranslate, 3) ;
+        driverStrafe = Math.pow(driverStrafe, 3);
+        driverRotation = Math.pow(driverStrafe, 3);
+
+
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                    driverTranslate,
+                    driverStrafe,
+                    driverRotation
             )
         );
 
