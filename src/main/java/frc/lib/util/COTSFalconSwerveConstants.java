@@ -67,17 +67,17 @@ public class COTSFalconSwerveConstants {
     }
 
     /** Swerve Drive Specialties - MK4i Module*/
-    public static COTSFalconSwerveConstants SDSMK4i(double driveGearRatio){
+    public static COTSFalconSwerveConstants SWERVEX(double driveGearRatio){
         double wheelDiameter = Units.inchesToMeters(4.0);
-
-        /** (150 / 7) : 1 */
-        double angleGearRatio = ((150.0 / 7.0) / 1.0);
-
-        double angleKP = 0.3;
+ 
+        /** 15.43 : 1 */
+        double angleGearRatio = (15.43/ 1.0);
+ 
+        double angleKP = 0.18;
         double angleKI = 0.0;
         double angleKD = 0.0;
         double angleKF = 0.0;
-
+ 
         boolean driveMotorInvert = false;
         boolean angleMotorInvert = true;
         boolean canCoderInvert = false;
@@ -109,6 +109,13 @@ public class COTSFalconSwerveConstants {
         public static final double SDSMK4i_L2 = (6.75 / 1.0);
         /** SDS MK4i - 6.12 : 1 */
         public static final double SDSMK4i_L3 = (6.12 / 1.0);
+
+        // SWERVE_X TRADITIONAL FALCON - BALANCED SPEED
+        public static final double SWERVEX_L2 = (7.13 / 1.0);
+    }
+
+    public static COTSFalconSwerveConstants SWERVEX(String swervexL2) {
+        return null;
     }
 }
 

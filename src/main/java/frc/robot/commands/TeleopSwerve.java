@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TeleopSwerve extends CommandBase {    
     private Swerve s_Swerve;    
-    private double translationSup;
-    private double strafeSup;
-    private double rotationSup;
+    private DoubleSupplier translationSup;
+    private DoubleSupplier strafeSup;
+    private DoubleSupplier rotationSup;
 
-    public TeleopSwerve(Swerve s_Swerve, double translationSup, double strafeSup, double rotationSup) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -26,13 +26,27 @@ public class TeleopSwerve extends CommandBase {
         this.rotationSup = rotationSup;
     }
 
+    public TeleopSwerve(Swerve s_Swerve2, Object translationSup2, Object strafeSup2, Object rotationSup2) {
+    }
+
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = translationSup;
-        double strafeVal = strafeSup;
-        double rotationVal = rotationSup;
+        double translationVal = translationSup.getAsDouble();
+        double strafeVal = strafeSup.getAsDouble();
+        double rotationVal = rotationSup.getAsDouble();
 
+        if (Math.abs(translationVal) <= 0.06) {
+            translationVal = 0;
+        }
+
+        if (Math.abs(strafeVal) <= 0.06) {
+            strafeVal = 0;
+        }
+
+        if (Math.abs(rotationVal) <= 0.06) {
+            rotationVal = 0;
+        }
 
         /* Drive */
         s_Swerve.drive(
