@@ -114,9 +114,6 @@ public class COTSFalconSwerveConstants {
         public static final double SWERVEX_L2 = (7.13 / 1.0);
     }
 
-    public static COTSFalconSwerveConstants SWERVEX(String swervexL2) {
-        return null;
-    }
 }
 
   

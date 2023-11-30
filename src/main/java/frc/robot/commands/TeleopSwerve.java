@@ -36,15 +36,12 @@ public class TeleopSwerve extends CommandBase {
         double strafeVal = strafeSup.getAsDouble();
         double rotationVal = rotationSup.getAsDouble();
 
-        if (Math.abs(translationVal) <= 0.06) {
+        if ((translationVal * translationVal) + (strafeVal * strafeVal) < 0.1 * 0.1) {
             translationVal = 0;
-        }
-
-        if (Math.abs(strafeVal) <= 0.06) {
             strafeVal = 0;
         }
 
-        if (Math.abs(rotationVal) <= 0.06) {
+        if (Math.abs(rotationVal) < 0.08) {
             rotationVal = 0;
         }
 

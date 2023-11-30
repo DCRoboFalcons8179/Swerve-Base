@@ -15,7 +15,7 @@ public class Logger extends SubsystemBase{
     private static ArrayList<String> names = new ArrayList<>();
     private static ArrayList<Supplier> suppliers = new ArrayList<>();
 
-    private static File dump = new File("C:\\Users\\RoboFalcons\\Coding\\Swerve-Base\\src\\main\\java\\frc\\logger");
+    private static File dump = new File("C:\\Users\\RoboFalcons\\Coding\\Swerve-Base\\src\\main\\java\\frc\\logger\\dump.txt"); //FIX
     private static FileWriter writer;
     
     private static final long beginTimeMillis = System.currentTimeMillis();
