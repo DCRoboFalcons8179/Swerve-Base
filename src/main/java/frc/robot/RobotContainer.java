@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
@@ -29,9 +30,10 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-
+    private final JoystickButton dumpToLogger = new JoystickButton(driver, XboxController.Button.kStart.value);
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+    private final Logger logger = Logger.getInstance();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -54,6 +56,8 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+
+        configureLogger();
     }
 
     /**
@@ -65,6 +69,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        dumpToLogger.whileTrue(new InstantCommand(() -> logger.dump()).andThen(new WaitCommand(0.5)));
+    }
+
+    private void configureLogger() {
+        logger.addValue("Translation Axis", () -> driver.getRawAxis(translationAxis));
     }
 
     /**
