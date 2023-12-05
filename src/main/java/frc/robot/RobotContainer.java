@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -31,9 +31,11 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton dumpToLogger = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final POVButton perfectForward = new POVButton(driver, 0);
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Logger logger = Logger.getInstance();
+    
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -50,7 +52,7 @@ public class RobotContainer {
                 s_Swerve, 
                     ()-> -driver.getRawAxis(translationAxis),
                     ()-> -driver.getRawAxis(strafeAxis),
-                    ()-> -driver.getRawAxis(rotationAxis)
+                    ()-> driver.getRawAxis(rotationAxis)
             )
         );
 
@@ -70,6 +72,7 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         dumpToLogger.whileTrue(new InstantCommand(() -> logger.dump()).andThen(new WaitCommand(0.5)));
+        perfectForward.whileTrue(new TeleopSwerve(s_Swerve, () -> 0.5, () -> 0, () -> 0));
     }
 
     private void configureLogger() {
@@ -81,6 +84,7 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
+
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         return new exampleAuto(s_Swerve);

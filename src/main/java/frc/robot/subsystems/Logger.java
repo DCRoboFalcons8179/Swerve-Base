@@ -15,14 +15,15 @@ public class Logger extends SubsystemBase{
     private static ArrayList<String> names = new ArrayList<>();
     private static ArrayList<Supplier> suppliers = new ArrayList<>();
 
-    private static File dump = new File("C:\\Users\\RoboFalcons\\Coding\\Swerve-Base\\src\\main\\java\\frc\\logger\\dump.txt"); //FIX
+    private static File dump = new File("C:\\Users\\RoboFalcons\\Coding\\Swerve-Base-1\\src\\main\\java\\frc\\logger"); //FIXx
+    
     private static FileWriter writer;
     
     private static final long beginTimeMillis = System.currentTimeMillis();
 
 
     public Logger() {
-
+        
         try{
 
             if (dump.createNewFile()) {
@@ -34,6 +35,7 @@ public class Logger extends SubsystemBase{
             dump.setWritable(true);
         } catch (IOException e) {
             System.out.println("dump file could not be created");
+            e.printStackTrace();
         }
 
         try{
