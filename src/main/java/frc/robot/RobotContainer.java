@@ -72,7 +72,7 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         dumpToLogger.whileTrue(new InstantCommand(() -> logger.dump()).andThen(new WaitCommand(0.5)));
-        perfectForward.whileTrue(new TeleopSwerve(s_Swerve, () -> 0.5, () -> 0, () -> 0));
+        perfectForward.whileTrue(new TeleopSwerve(s_Swerve, () -> 0.25, () -> 0, () -> 0));
     }
 
     private void configureLogger() {

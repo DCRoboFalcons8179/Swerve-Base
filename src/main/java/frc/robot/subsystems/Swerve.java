@@ -8,9 +8,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import javax.sound.midi.Track;
+
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.kauailabs.navx.frc.AHRS;
+
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -21,13 +26,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public Pigeon2 gyro;
+    public AHRS gyro;
 
     public boolean fieldCentricBoolean = true;
 
     public Swerve() {
-        gyro = new Pigeon2(Constants.Swerve.pigeonID);
-        gyro.configFactoryDefault();
+        try {
+            System.out.println("--------------");
+            gyro = new AHRS(SPI.Port.kMXP); 
+
+            System.out.println("NavX plugged in");
+            System.out.println("--------------");
+
+
+        } catch (RuntimeException ex ) {
+            System.out.println("NavX not plugged in");
+            System.out.println("--------------");
+        }
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
@@ -46,7 +61,24 @@ public class Swerve extends SubsystemBase {
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
     }
 
+// These get the value of there respective variable names, the variables are properly set in the following function M.A.D. 2023 Off
+
+    private double translationX = 0;
+
+    private double translationY = 0;
+
+    private double rotationCommand = 0; 
+
     public void drive(Translation2d translation, double rotation, boolean isOpenLoop) {
+
+
+        // Gets the values of x y and rotation and assigns them to their repestive variables
+        translationX = translation.getX();
+        
+        translationY = translation.getY();
+
+        rotationCommand = rotation;
+
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldCentricBoolean ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -101,7 +133,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.setYaw(0);
+        gyro.zeroYaw();
     }
 
     public void toggleFieldCentric (){
@@ -110,7 +142,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(-gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
 
     public void resetModulesToAbsolute(){
@@ -118,7 +150,7 @@ public class Swerve extends SubsystemBase {
             mod.resetToAbsolute();
         }
     }
-
+    
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  
@@ -126,7 +158,21 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
+
+        SmartDashboard.putNumber("Commanded Velocity Y", translationY);
+
+        SmartDashboard.putNumber("Commanded Velocity X", translationX);
+        
+        SmartDashboard.putNumber("Commanded Rotation", rotationCommand);
+
+        SmartDashboard.putNumber("Velocity X Error", Math.abs(translationX) - Math.abs(mSwerveMods[0].getState().speedMetersPerSecond));
+
+        SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
+
+        SmartDashboard.putNumber("Gyro Nice Value", this.getYaw().getDegrees());
+
+        SmartDashboard.putBoolean("Field Centric", fieldCentricBoolean);
     }
 }
