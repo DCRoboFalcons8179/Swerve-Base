@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import javax.naming.event.EventDirContext;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Logger extends SubsystemBase{
@@ -15,7 +17,7 @@ public class Logger extends SubsystemBase{
     private static ArrayList<String> names = new ArrayList<>();
     private static ArrayList<Supplier> suppliers = new ArrayList<>();
 
-    private static File dump = new File("C:\\Users\\RoboFalcons\\Coding\\Swerve-Base-1\\src\\main\\java\\frc\\logger"); //FIXx
+    private static File dump = new File(System.getProperty("user.dir"), "src\\main\\java\\frc\\logger\\dump.txt");
     
     private static FileWriter writer;
     
