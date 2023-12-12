@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.*;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,21 +25,29 @@ public class RobotContainer {
     private final Joystick driver = new Joystick(0);
 
     /* Drive Controls */
+    private final int testPathIndex = XboxController.Axis.kLeftX.value;
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
+    private final JoystickButton testPath = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton dumpToLogger = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final POVButton perfectForward = new POVButton(driver, 0);
+    private final POVButton turn90Degrees = new POVButton(driver, 270);
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Logger logger = Logger.getInstance();
     
+    // Pathplanner Paths
+    PathConstraints constraints = new PathConstraints(1, 1);
 
+    PathPlannerTrajectory strightTrajectory = PathPlanner.loadPath("Straight", constraints);  //loadPath("Straight");
+    PathPlannerTrajectory turn90DegreesTrajectory = PathPlanner.loadPath("turn90Degrees", constraints);  //loadPath("Straight");
 
+    
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
@@ -58,7 +68,7 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
-
+        buttonCommands();
         configureLogger();
     }
 
@@ -73,6 +83,11 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         dumpToLogger.whileTrue(new InstantCommand(() -> logger.dump()).andThen(new WaitCommand(0.5)));
         perfectForward.whileTrue(new TeleopSwerve(s_Swerve, () -> 0.25, () -> 0, () -> 0));
+    }
+
+    private void buttonCommands() {
+        testPath.debounce(0.04).whileTrue(new doPathTrajectory(s_Swerve, strightTrajectory));
+        turn90Degrees.debounce(0.04).whileTrue(new doPathTrajectory(s_Swerve, turn90DegreesTrajectory));
     }
 
     private void configureLogger() {

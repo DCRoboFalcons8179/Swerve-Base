@@ -174,5 +174,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Gyro Nice Value", this.getYaw().getDegrees());
 
         SmartDashboard.putBoolean("Field Centric", fieldCentricBoolean);
+
+        SmartDashboard.putNumber("Position", mSwerveMods[0].getPosition().distanceMeters);
+
+
     }
 }
