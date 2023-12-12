@@ -36,15 +36,12 @@ public class TeleopSwerve extends CommandBase {
         double strafeVal = strafeSup.getAsDouble();
         double rotationVal = rotationSup.getAsDouble();
 
-        if (Math.abs(translationVal) <= 0.06) {
+        if ((translationVal * translationVal) + (strafeVal * strafeVal) < 0.02) {
             translationVal = 0;
-        }
-
-        if (Math.abs(strafeVal) <= 0.06) {
             strafeVal = 0;
         }
 
-        if (Math.abs(rotationVal) <= 0.06) {
+        if (Math.abs(rotationVal) < 0.08) {
             rotationVal = 0;
         }
 
@@ -52,7 +49,7 @@ public class TeleopSwerve extends CommandBase {
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
             rotationVal * Constants.Swerve.maxAngularVelocity,
-            true
+            false
         );
     }
 }
