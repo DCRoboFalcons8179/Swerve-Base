@@ -37,6 +37,7 @@ public class RobotContainer {
     private final JoystickButton dumpToLogger = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final POVButton perfectForward = new POVButton(driver, 0);
     private final POVButton turn90Degrees = new POVButton(driver, 270);
+    private final POVButton fancyDanyPath = new POVButton(driver, 180);
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Logger logger = Logger.getInstance();
@@ -46,6 +47,7 @@ public class RobotContainer {
 
     PathPlannerTrajectory strightTrajectory = PathPlanner.loadPath("Straight", constraints);  //loadPath("Straight");
     PathPlannerTrajectory turn90DegreesTrajectory = PathPlanner.loadPath("turn90Degrees", constraints);  //loadPath("Straight");
+    PathPlannerTrajectory fancyDancyPathTrajectory = PathPlanner.loadPath("fancyDancyPath", constraints);  //loadPath("Straight");
 
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -88,6 +90,7 @@ public class RobotContainer {
     private void buttonCommands() {
         testPath.debounce(0.04).whileTrue(new doPathTrajectory(s_Swerve, strightTrajectory));
         turn90Degrees.debounce(0.04).whileTrue(new doPathTrajectory(s_Swerve, turn90DegreesTrajectory));
+        fancyDanyPath.debounce(0.04).whileTrue(new doPathTrajectory(s_Swerve, fancyDancyPathTrajectory));
     }
 
     private void configureLogger() {

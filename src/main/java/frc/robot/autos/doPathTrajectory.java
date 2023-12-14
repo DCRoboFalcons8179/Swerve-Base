@@ -47,7 +47,7 @@ public class doPathTrajectory extends SequentialCommandGroup {
               new PIDController(0, 0, 0),
 
               // Theta Increase I a little and more paths
-              new PIDController(0.13, 0.00026, 0),
+              new PIDController(0.13, 0.00033, 0),
               s_Swerve::setModuleStates,
               true,
               s_Swerve);
